@@ -5,6 +5,15 @@
     "bin": {
         "workflow": "bin/wf"
     },
+    "homepage": "https://github.com/timberio/outside-cli#readme",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/timberio/outside-cli.git"
+    },
+    "engines": {
+      "node": ">=8"
+    },
+      "preferGlobal": true,
     "scripts": {},
     "devDependencies": {
         "@babel/cli": "^7.4.4",
