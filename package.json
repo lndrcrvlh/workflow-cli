@@ -1,0 +1,21 @@
+{
+    "name": "workflow-cli",
+    "version": "1.0.0",
+    "license": "MIT",
+    "bin": {
+        "workflow": "bin/wf"
+    },
+    "scripts": {},
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.5"
+    },
+    "dependencies": {
+        "axios": "^0.19.0",
+        "camunda-bpm-sdk-js": "git://github.com/camunda/camunda-bpm-sdk-js#7.10.6",
+        "cli-table": "^0.3.1",
+        "inquirer": "^0.8.0",
+        "minimist": "^1.2.0",
+        "ora": "^3.4.0"
+    }
+}

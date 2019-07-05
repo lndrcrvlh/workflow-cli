@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:signal id="Signal_1cc3ddv" name="little01" />
+  <bpmn:collaboration id="Collaboration_1ipem5p">
+    <bpmn:participant id="Participant_0gxbpkq" name="Insurance Claim " processRef="insuranceClaim01" />
+  </bpmn:collaboration>
+  <bpmn:process id="insuranceClaim01" isExecutable="true">
+    <bpmn:laneSet>
+      <bpmn:lane id="Lane_1hjf6wk" name="Talk to Tech">
+        <bpmn:flowNodeRef>contactSpec</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>openScreen</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>request2rep</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1s0nvxp" name="PresetntQuestion">
+        <bpmn:flowNodeRef>followUp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>offerSupport</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>willDo</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>policyCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>welcome</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0s31vns</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>claimStatus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_16anp0x</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ExclusiveGateway_0hr1lqz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>onsiteEvaluation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>scheduleApt</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_0rf0ynh</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:serviceTask id="followUp" name="followUp" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_0d2dlsh">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+execution.setVariable("text", 'followUp');
+execution.setVariable("askQuestionReprompt", 'reWelcomeprompt');
+execution.setVariable("answervar", 'custumerIsHappy');
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("abortIntents", 'abort');
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_177f358</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_033nre5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="offerSupport" name="offerSupport" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_1phk7se">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+execution.setVariable("text", 'offerSupport');
+execution.setVariable("askQuestionReprompt", 'offerSupportreprompt');
+execution.setVariable("answervar", 'custumerIsHappy');
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("abortIntents", 'abort');
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_033nre5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1wtbbed</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="willDo" name="willDo" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "send");
+execution.setVariable("send", "willDo"); 
+]]></camunda:script>
+        </camunda:executionListener>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_2ra2l20">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "send");
+execution.setVariable("text", "willDo"); 
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1wtbbed</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04juccu</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0cl4oop" name="Choice: B" sourceRef="ExclusiveGateway_16anp0x" targetRef="contactSpec">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{actionRequested == 'B'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1rw7gl1" name="no" sourceRef="ExclusiveGateway_0hr1lqz" targetRef="EndEvent_0rf0ynh">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{followUpLater == 'unConfirm'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_04juccu" sourceRef="willDo" targetRef="EndEvent_0rf0ynh" />
+    <bpmn:sequenceFlow id="SequenceFlow_09mje7c" sourceRef="onsiteEvaluation" targetRef="ExclusiveGateway_0hr1lqz" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ou4ofi" sourceRef="openScreen" targetRef="ExclusiveGateway_0hr1lqz" />
+    <bpmn:sequenceFlow id="SequenceFlow_177f358" name="yes" sourceRef="ExclusiveGateway_0hr1lqz" targetRef="followUp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{followUpLater == 'confirm'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_033nre5" sourceRef="followUp" targetRef="offerSupport" />
+    <bpmn:sequenceFlow id="SequenceFlow_1wtbbed" sourceRef="offerSupport" targetRef="willDo" />
+    <bpmn:sequenceFlow id="SequenceFlow_0fi78g4" sourceRef="request2rep" targetRef="openScreen">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{repHasTime == 'confirm'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_093mwbo" sourceRef="contactSpec" targetRef="request2rep" />
+    <bpmn:serviceTask id="policyCheck" name="Policy Check" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_13ga3m3">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "card");
+execution.setVariableLocal("cardFn", "policyCheckCard");
+
+execution.setVariable("askQuestionReprompt", 'policyCheckreprompt');
+execution.setVariable("answervar", 'policySelection');
+execution.setVariable("abortIntents", 'abort');
+
+execution.setVariable("claimID", '1111');
+
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1j1um8k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jfda6m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_1l72y0v</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="Signal_1cc3ddv" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="welcome" name="welcome" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_1c3pfsf">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+execution.setVariable("text", 'welcome');
+execution.setVariable("askQuestionReprompt", 'welcomeReprompt');
+execution.setVariable("answervar", 'hasClaimID');
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("abortIntents", 'abort');
+
+execution.setVariable("claimID", 'unknown');]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1l72y0v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0m16jxy</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0s31vns">
+      <bpmn:incoming>SequenceFlow_0m16jxy</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1j1um8k</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1retcpv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="claimStatus" name="claimStatus" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_1gb0pc8">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "card");
+execution.setVariableLocal("cardFn", "claimStatusCard");
+
+execution.setVariable("answervar", 'actionRequested');
+execution.setVariable("abortIntents", 'abort');
+
+
+
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1retcpv</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0jfda6m</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_07wtc9w</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_16anp0x">
+      <bpmn:incoming>SequenceFlow_07wtc9w</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0cl4oop</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1bm08tg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1j1um8k" name="no" sourceRef="ExclusiveGateway_0s31vns" targetRef="policyCheck">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{hasClaimID == 'notConfirm'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0jfda6m" name="&#10;&#10;" sourceRef="policyCheck" targetRef="claimStatus" />
+    <bpmn:sequenceFlow id="SequenceFlow_1l72y0v" sourceRef="StartEvent_1" targetRef="welcome" />
+    <bpmn:sequenceFlow id="SequenceFlow_0m16jxy" sourceRef="welcome" targetRef="ExclusiveGateway_0s31vns" />
+    <bpmn:sequenceFlow id="SequenceFlow_1retcpv" name="yes" sourceRef="ExclusiveGateway_0s31vns" targetRef="claimStatus">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{hasClaimID == 'confirm'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_07wtc9w" sourceRef="claimStatus" targetRef="ExclusiveGateway_16anp0x" />
+    <bpmn:sequenceFlow id="SequenceFlow_1bm08tg" name="Choice: A" sourceRef="ExclusiveGateway_16anp0x" targetRef="scheduleApt">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[#{actionRequested == 'A'}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1w668lt" sourceRef="scheduleApt" targetRef="onsiteEvaluation" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0hr1lqz">
+      <bpmn:incoming>SequenceFlow_09mje7c</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1ou4ofi</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_177f358</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1rw7gl1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="onsiteEvaluation" name="On Site Evaluation" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:incoming>SequenceFlow_1w668lt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_09mje7c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="scheduleApt" name="scheduleApt" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:incoming>SequenceFlow_1bm08tg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1w668lt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_0rf0ynh">
+      <bpmn:incoming>SequenceFlow_1rw7gl1</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_04juccu</bpmn:incoming>
+      <bpmn:terminateEventDefinition />
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="contactSpec" name="contactSpec" camunda:type="external" camunda:topic="presentQuestion">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_3cb4fru">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+
+execution.setVariable("text", "contactSpec"); 
+execution.setVariable("askQuestionReprompt", "contactSpecrepromp");
+execution.setVariable("answervar", "followUpLater");
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("bizProcessComplete", "true");
+execution.setVariable("talkToPerson", "jo0001");
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0cl4oop</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_093mwbo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="openScreen" name="openScreen" camunda:type="external" camunda:topic="talkToTech">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_05kogdb">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+execution.setVariable("text", 'openScreen');
+execution.setVariable("askQuestionReprompt", "openScreenreprompt");
+execution.setVariable("answervar", 'repDone');
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("abortIntents", 'abort');
+]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0fi78g4</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1ou4ofi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="request2rep" name="request2rep" camunda:type="external" camunda:topic="talkToTech">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_3b6kj3v">
+            <camunda:script scriptFormat="javascript"><![CDATA[execution.setVariableLocal("type", "textprompt");
+execution.setVariable("text", 'request2rep');
+execution.setVariable("askQuestionReprompt", 'request2repreprompt');
+execution.setVariable("answervar", 'repHasTime');
+execution.setVariable("localIntents", 'confirm;notConfirm');
+execution.setVariable("abortIntents", 'abort');
+
+execution.setVariable("claimID", 'unknown');]]></camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_093mwbo</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0fi78g4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_1bkg8hu">
+      <bpmn:text>Would you like me to have your agent reach out to you and see what we can do to make you more pleased with our service.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1u47k6i">
+      <bpmn:text><![CDATA[Will do. That's all for now! Reach out any time.]]></bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0co3hsp">
+      <bpmn:text><![CDATA[Hi, Mr. Smith. This is Klea, Insurance Claim Reporting and Status electronic assistant regarding 324, 123 Main Street Retail Space Damage claim. Do you have time to contact the customer? She does not know why we have not visited her establishment.
+]]></bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0gf5zeh">
+      <bpmn:text>Hi, this is Klea, Insurance Claim Reporting and Status electronic assistant for your insurance carrier again. Our records show you ow have an appointment for a visit from our staff member for a week from today at 10am. Typically, once you have had a site visit, we are able to play a claim within 30 days. Given that, would you say you are happy with our progress?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1kz56hz" sourceRef="followUp" targetRef="TextAnnotation_0gf5zeh" />
+    <bpmn:association id="Association_1dl44r4" sourceRef="offerSupport" targetRef="TextAnnotation_1bkg8hu" />
+    <bpmn:association id="Association_0r78w5v" sourceRef="willDo" targetRef="TextAnnotation_1u47k6i" />
+    <bpmn:association id="Association_0sxw1gj" sourceRef="openScreen" targetRef="TextAnnotation_1d5ietv" />
+    <bpmn:association id="Association_0vc1vd2" sourceRef="request2rep" targetRef="TextAnnotation_0co3hsp" />
+    <bpmn:textAnnotation id="TextAnnotation_0vxkkzy">
+      <bpmn:text><![CDATA[Hi, {userName}, this is Klea, Insurance Claim Reporting and Status electronic assistant for your insurance carrier. I'm here 24/7 to help with your claims. Do you have an existing claim ID you would like to get information about?]]></bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0p0514m">
+      <bpmn:text>Which claim are you talking about?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_14ivkbl">
+      <bpmn:text>Schedule an oniste evaluation</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0k456gq" sourceRef="policyCheck" targetRef="TextAnnotation_0vsn3p2" />
+    <bpmn:association id="Association_01d8yio" sourceRef="welcome" targetRef="TextAnnotation_0vxkkzy" />
+    <bpmn:association id="Association_1qbnejv" sourceRef="claimStatus" targetRef="TextAnnotation_05q3e64" />
+    <bpmn:association id="Association_0v80qls" sourceRef="scheduleApt" targetRef="TextAnnotation_0p0514m" />
+    <bpmn:association id="Association_1c76fn5" sourceRef="onsiteEvaluation" targetRef="TextAnnotation_14ivkbl" />
+    <bpmn:textAnnotation id="TextAnnotation_05q3e64">
+      <bpmn:text><![CDATA[This claim was registered more than 30 days ago and the database indicates that you have not had a visit from our staff to see the damage. I don't have a record explaining why so we can A: attempt to schedule an appointment or B: speak to a specialist in Business Interruption Insurance who can figure out how to move this forward, or C: address some other issue?]]></bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0vsn3p2">
+      <bpmn:text>Which policy are you talking about?</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_10clnri">
+      <bpmn:text><![CDATA[I'll ask someone to call you. May I check in with you later today to see if you are satisfied with progress and then again, in a week to make sure you are getting the level of support you need?
+]]></bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1vob745" sourceRef="contactSpec" targetRef="TextAnnotation_10clnri" />
+    <bpmn:textAnnotation id="TextAnnotation_1d5ietv">
+      <bpmn:text><![CDATA[I'll open the record on your phone and connect you. Let me know if someone is scheduled to visit and validate. Update the ticket with the result of your call, please! Say 'yes' when you are done speaking to the customer.]]></bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1ipem5p">
+      <bpmndi:BPMNShape id="Participant_0gxbpkq_di" bpmnElement="Participant_0gxbpkq">
+        <dc:Bounds x="227" y="-682.5" width="1924" height="1337" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0q5et7a_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="300" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="228" y="258" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0s31vns_di" bpmnElement="ExclusiveGateway_0s31vns" isMarkerVisible="true">
+        <dc:Bounds x="571" y="219" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="551" y="273" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0q8mkkq_di" bpmnElement="policyCheck">
+        <dc:Bounds x="546" y="63" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1xwmgy8_di" bpmnElement="claimStatus">
+        <dc:Bounds x="722" y="204" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_16anp0x_di" bpmnElement="ExclusiveGateway_16anp0x" isMarkerVisible="true">
+        <dc:Bounds x="882" y="219" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="862" y="273" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_16xri36_di" bpmnElement="EndEvent_0rf0ynh">
+        <dc:Bounds x="2095" y="226" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2067" y="266" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0hr1lqz_di" bpmnElement="ExclusiveGateway_0hr1lqz" isMarkerVisible="true">
+        <dc:Bounds x="1646" y="219" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1626" y="273" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1knxpme_di" bpmnElement="welcome">
+        <dc:Bounds x="402" y="204" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0hoo7b7_di" bpmnElement="followUp">
+        <dc:Bounds x="1621" y="339" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_00s62nu_di" bpmnElement="offerSupport">
+        <dc:Bounds x="1762" y="339" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1y2lv2e_di" bpmnElement="willDo">
+        <dc:Bounds x="1917" y="339" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0vsn3p2_di" bpmnElement="TextAnnotation_0vsn3p2">
+        <dc:Bounds x="364" y="75" width="152" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0vxkkzy_di" bpmnElement="TextAnnotation_0vxkkzy">
+        <dc:Bounds x="380" y="346" width="146" height="152" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_05q3e64_di" bpmnElement="TextAnnotation_05q3e64">
+        <dc:Bounds x="698" y="329" width="147" height="262" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1bkg8hu_di" bpmnElement="TextAnnotation_1bkg8hu">
+        <dc:Bounds x="1758" y="486" width="109" height="123" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1u47k6i_di" bpmnElement="TextAnnotation_1u47k6i">
+        <dc:Bounds x="1927" y="472" width="100" height="69" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1nxa7yl_di" bpmnElement="openScreen">
+        <dc:Bounds x="1621" y="-570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1yh7tq6_di" bpmnElement="scheduleApt">
+        <dc:Bounds x="1056" y="204" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0p0514m_di" bpmnElement="TextAnnotation_0p0514m">
+        <dc:Bounds x="1036" y="147" width="140" height="42" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_14ivkbl_di" bpmnElement="TextAnnotation_14ivkbl">
+        <dc:Bounds x="1366" y="140" width="100" height="55" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1lh76uo_di" bpmnElement="onsiteEvaluation">
+        <dc:Bounds x="1366" y="204" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1rrh19h_di" bpmnElement="contactSpec">
+        <dc:Bounds x="1083" y="-570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_10clnri_di" bpmnElement="TextAnnotation_10clnri">
+        <dc:Bounds x="1046" y="-418" width="174" height="128" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1ehzdw1_di" bpmnElement="request2rep">
+        <dc:Bounds x="1343" y="-570" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0co3hsp_di" bpmnElement="TextAnnotation_0co3hsp">
+        <dc:Bounds x="1298" y="-400" width="190" height="134" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1d5ietv_di" bpmnElement="TextAnnotation_1d5ietv">
+        <dc:Bounds x="1782" y="-605" width="139" height="169" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0gf5zeh_di" bpmnElement="TextAnnotation_0gf5zeh">
+        <dc:Bounds x="1431" y="460" width="231" height="175" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1l72y0v_di" bpmnElement="SequenceFlow_1l72y0v">
+        <di:waypoint xsi:type="dc:Point" x="336" y="241" />
+        <di:waypoint xsi:type="dc:Point" x="402" y="243" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="324" y="221" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0m16jxy_di" bpmnElement="SequenceFlow_0m16jxy">
+        <di:waypoint xsi:type="dc:Point" x="502" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="571" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="492" y="223" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1j1um8k_di" bpmnElement="SequenceFlow_1j1um8k">
+        <di:waypoint xsi:type="dc:Point" x="596" y="219" />
+        <di:waypoint xsi:type="dc:Point" x="596" y="143" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="605" y="175" width="13" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1retcpv_di" bpmnElement="SequenceFlow_1retcpv">
+        <di:waypoint xsi:type="dc:Point" x="621" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="722" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="663" y="223" width="18" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0jfda6m_di" bpmnElement="SequenceFlow_0jfda6m">
+        <di:waypoint xsi:type="dc:Point" x="646" y="103" />
+        <di:waypoint xsi:type="dc:Point" x="772" y="103" />
+        <di:waypoint xsi:type="dc:Point" x="772" y="204" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="723" y="65" width="0" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0k456gq_di" bpmnElement="Association_0k456gq">
+        <di:waypoint xsi:type="dc:Point" x="546" y="100" />
+        <di:waypoint xsi:type="dc:Point" x="516" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07wtc9w_di" bpmnElement="SequenceFlow_07wtc9w">
+        <di:waypoint xsi:type="dc:Point" x="822" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="882" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="807" y="223" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1qbnejv_di" bpmnElement="Association_1qbnejv">
+        <di:waypoint xsi:type="dc:Point" x="772" y="284" />
+        <di:waypoint xsi:type="dc:Point" x="772" y="329" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0cl4oop_di" bpmnElement="SequenceFlow_0cl4oop">
+        <di:waypoint xsi:type="dc:Point" x="907" y="219" />
+        <di:waypoint xsi:type="dc:Point" x="907" y="-530" />
+        <di:waypoint xsi:type="dc:Point" x="1083" y="-530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="962.1317829457365" y="-527" width="48" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1bm08tg_di" bpmnElement="SequenceFlow_1bm08tg">
+        <di:waypoint xsi:type="dc:Point" x="932" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="985" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1056" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="958.5340150066475" y="226.41949658240208" width="49" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rw7gl1_di" bpmnElement="SequenceFlow_1rw7gl1">
+        <di:waypoint xsi:type="dc:Point" x="1671" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1896" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1896" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="2095" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1830.0075187969926" y="228" width="13" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_04juccu_di" bpmnElement="SequenceFlow_04juccu">
+        <di:waypoint xsi:type="dc:Point" x="2017" y="379" />
+        <di:waypoint xsi:type="dc:Point" x="2113" y="379" />
+        <di:waypoint xsi:type="dc:Point" x="2113" y="262" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2020" y="358" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_09mje7c_di" bpmnElement="SequenceFlow_09mje7c">
+        <di:waypoint xsi:type="dc:Point" x="1466" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1534" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1646" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1455" y="223" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ou4ofi_di" bpmnElement="SequenceFlow_1ou4ofi">
+        <di:waypoint xsi:type="dc:Point" x="1671" y="-490" />
+        <di:waypoint xsi:type="dc:Point" x="1671" y="-145" />
+        <di:waypoint xsi:type="dc:Point" x="1671" y="-145" />
+        <di:waypoint xsi:type="dc:Point" x="1671" y="219" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1641" y="-151" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_177f358_di" bpmnElement="SequenceFlow_177f358">
+        <di:waypoint xsi:type="dc:Point" x="1671" y="269" />
+        <di:waypoint xsi:type="dc:Point" x="1671" y="339" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1687" y="316.72093023255815" width="18" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01d8yio_di" bpmnElement="Association_01d8yio">
+        <di:waypoint xsi:type="dc:Point" x="452" y="284" />
+        <di:waypoint xsi:type="dc:Point" x="453" y="346" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_033nre5_di" bpmnElement="SequenceFlow_033nre5">
+        <di:waypoint xsi:type="dc:Point" x="1721" y="379" />
+        <di:waypoint xsi:type="dc:Point" x="1762" y="379" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1527" y="527" width="90" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1kz56hz_di" bpmnElement="Association_1kz56hz">
+        <di:waypoint xsi:type="dc:Point" x="1641" y="419" />
+        <di:waypoint xsi:type="dc:Point" x="1611" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1wtbbed_di" bpmnElement="SequenceFlow_1wtbbed">
+        <di:waypoint xsi:type="dc:Point" x="1862" y="379" />
+        <di:waypoint xsi:type="dc:Point" x="1917" y="379" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1845" y="358" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1dl44r4_di" bpmnElement="Association_1dl44r4">
+        <di:waypoint xsi:type="dc:Point" x="1812" y="419" />
+        <di:waypoint xsi:type="dc:Point" x="1812" y="486" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0r78w5v_di" bpmnElement="Association_0r78w5v">
+        <di:waypoint xsi:type="dc:Point" x="1970" y="419" />
+        <di:waypoint xsi:type="dc:Point" x="1974" y="472" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fi78g4_di" bpmnElement="SequenceFlow_0fi78g4">
+        <di:waypoint xsi:type="dc:Point" x="1443" y="-530" />
+        <di:waypoint xsi:type="dc:Point" x="1621" y="-530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1487" y="-551" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0sxw1gj_di" bpmnElement="Association_0sxw1gj">
+        <di:waypoint xsi:type="dc:Point" x="1721" y="-527" />
+        <di:waypoint xsi:type="dc:Point" x="1782" y="-524" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1w668lt_di" bpmnElement="SequenceFlow_1w668lt">
+        <di:waypoint xsi:type="dc:Point" x="1156" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1261" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1261" y="244" />
+        <di:waypoint xsi:type="dc:Point" x="1366" y="244" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1231" y="238" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0v80qls_di" bpmnElement="Association_0v80qls">
+        <di:waypoint xsi:type="dc:Point" x="1106" y="204" />
+        <di:waypoint xsi:type="dc:Point" x="1105" y="189" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1c76fn5_di" bpmnElement="Association_1c76fn5">
+        <di:waypoint xsi:type="dc:Point" x="1416" y="204" />
+        <di:waypoint xsi:type="dc:Point" x="1416" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_093mwbo_di" bpmnElement="SequenceFlow_093mwbo">
+        <di:waypoint xsi:type="dc:Point" x="1183" y="-530" />
+        <di:waypoint xsi:type="dc:Point" x="1343" y="-530" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1218" y="-551" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1vob745_di" bpmnElement="Association_1vob745">
+        <di:waypoint xsi:type="dc:Point" x="1133" y="-490" />
+        <di:waypoint xsi:type="dc:Point" x="1134" y="-418" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0vc1vd2_di" bpmnElement="Association_0vc1vd2">
+        <di:waypoint xsi:type="dc:Point" x="1393" y="-490" />
+        <di:waypoint xsi:type="dc:Point" x="1394" y="-400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Lane_1hjf6wk_di" bpmnElement="Lane_1hjf6wk">
+        <dc:Bounds x="257" y="-682.5" width="1894" height="669" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1s0nvxp_di" bpmnElement="Lane_1s0nvxp">
+        <dc:Bounds x="257" y="-13.5" width="1894" height="668" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
