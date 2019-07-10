@@ -1,4 +1,4 @@
-const  {displayAllTasks, displayTask} = require('../lib/taskManager')
+const  {displayAllTasks, displayTask} = require('../lib/taskManager');
 
 module.exports = (args) => {
     const ora = require('ora')
@@ -157,12 +157,14 @@ module.exports = (args) => {
                   'Task ID',
                   'Process name',
                   'Task name', 
-                  'Status'
+                  'Status',
+		  'Assignee'
                 ],
                 colWidths: [
                   38,
                   38,
                   38,
+		  24,
                   24
                 ]
               });
@@ -172,7 +174,9 @@ module.exports = (args) => {
                 table.push([
                   task.id || '',
                   task._embedded.processDefinition && task._embedded.processDefinition[0].name || '',
-                  task.name || '', task.delegationState || 'not started'
+                  task.name || '', 
+		  task.assignee || '',
+		  task.delegationState || 'not started'
                 ]);
               });
       
