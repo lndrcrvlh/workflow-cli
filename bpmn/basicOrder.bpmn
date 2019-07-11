@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_12azph6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.1.2">
   <bpmn:process id="BasicOrder" name="basic Order with manager intervention" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_1" name="startEvent">
+    <bpmn:startEvent id="StartEvent_1" name="Order is placed">
       <bpmn:outgoing>SequenceFlow_0da65v7</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0da65v7" sourceRef="StartEvent_1" targetRef="pickItems" />
+    <bpmn:sequenceFlow id="SequenceFlow_0da65v7" sourceRef="StartEvent_1" targetRef="collectComps" />
     <bpmn:sequenceFlow id="SequenceFlow_12eq1py" sourceRef="stitch" targetRef="finish" />
     <bpmn:sequenceFlow id="SequenceFlow_1394mi0" sourceRef="finish" targetRef="qa" />
     <bpmn:sequenceFlow id="SequenceFlow_00qhhgn" sourceRef="qa" targetRef="ship" />
@@ -13,36 +13,36 @@
       <bpmn:incoming>SequenceFlow_1bhig6q</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1bhig6q" sourceRef="followUp" targetRef="EndEvent_13ymvl8" />
-    <bpmn:userTask id="pickItems" name="pick items" camunda:assignee="demo">
+    <bpmn:userTask id="collectComps" name="Collect Components" camunda:assignee="Pick Team">
       <bpmn:incoming>SequenceFlow_0da65v7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0hmcsy0</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="printA" name="PrintA" camunda:assignee="demoA">
+    <bpmn:userTask id="printA" name="PrintA" camunda:assignee="Print Team">
       <bpmn:incoming>SequenceFlow_1dmi9zo</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_04gnhvt</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="stitch" name="Stitch">
+    <bpmn:userTask id="stitch" name="Stitch" camunda:assignee="Assembly Team">
       <bpmn:incoming>SequenceFlow_0mvw18j</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_12eq1py</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="finish" name="Finish">
+    <bpmn:userTask id="finish" name="Finish" camunda:assignee="Finishing Team">
       <bpmn:incoming>SequenceFlow_12eq1py</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_02acaig</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1394mi0</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="qa" name="QA">
+    <bpmn:userTask id="qa" name="QA" camunda:assignee="QA Team">
       <bpmn:incoming>SequenceFlow_1394mi0</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_00qhhgn</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="ship" name="Ship">
+    <bpmn:userTask id="ship" name="Ship" camunda:assignee="Shipping and Returns Team">
       <bpmn:incoming>SequenceFlow_00qhhgn</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1i76gsw</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="followUp" name="Follow Up">
+    <bpmn:userTask id="followUp" name="Follow Up" camunda:assignee="Sales Team">
       <bpmn:incoming>SequenceFlow_1i76gsw</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1bhig6q</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0hmcsy0" sourceRef="pickItems" targetRef="ExclusiveGateway_139n5hr" />
+    <bpmn:sequenceFlow id="SequenceFlow_0hmcsy0" sourceRef="collectComps" targetRef="ExclusiveGateway_139n5hr" />
     <bpmn:sequenceFlow id="SequenceFlow_1dmi9zo" sourceRef="ExclusiveGateway_139n5hr" targetRef="printA" />
     <bpmn:inclusiveGateway id="ExclusiveGateway_139n5hr">
       <bpmn:incoming>SequenceFlow_0hmcsy0</bpmn:incoming>
@@ -58,7 +58,7 @@
     </bpmn:inclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_04gnhvt" sourceRef="printA" targetRef="ExclusiveGateway_1cr7dyu" />
     <bpmn:sequenceFlow id="SequenceFlow_0mvw18j" sourceRef="ExclusiveGateway_1cr7dyu" targetRef="stitch" />
-    <bpmn:userTask id="Task_0sgbz01" name="PrintB" camunda:assignee="demoB">
+    <bpmn:userTask id="Task_0sgbz01" name="PrintB" camunda:assignee="Debby">
       <bpmn:incoming>SequenceFlow_1vjdk14</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1s9gs7y</bpmn:outgoing>
     </bpmn:userTask>
@@ -80,12 +80,12 @@
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="223" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="174" y="266" width="50" height="14" />
+          <dc:Bounds x="160" y="266" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0da65v7_di" bpmnElement="SequenceFlow_0da65v7">
         <di:waypoint x="215" y="241" />
-        <di:waypoint x="294" y="241" />
+        <di:waypoint x="293" y="241" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_12eq1py_di" bpmnElement="SequenceFlow_12eq1py">
         <di:waypoint x="767" y="241" />
@@ -115,8 +115,8 @@
         <di:waypoint x="681" y="481" />
         <di:waypoint x="890" y="481" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1iowgq2_di" bpmnElement="pickItems">
-        <dc:Bounds x="294" y="201" width="100" height="80" />
+      <bpmndi:BPMNShape id="UserTask_1iowgq2_di" bpmnElement="collectComps">
+        <dc:Bounds x="293" y="201" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_147leig_di" bpmnElement="printA">
         <dc:Bounds x="488" y="201" width="100" height="80" />
@@ -137,7 +137,7 @@
         <dc:Bounds x="581" y="441" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0hmcsy0_di" bpmnElement="SequenceFlow_0hmcsy0">
-        <di:waypoint x="394" y="241" />
+        <di:waypoint x="393" y="241" />
         <di:waypoint x="413" y="241" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1dmi9zo_di" bpmnElement="SequenceFlow_1dmi9zo">
