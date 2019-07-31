@@ -2,7 +2,7 @@ const menus = {
     main: `
       workflow [command] <options>
   
-      show .............. show processes 
+      show ............... show processes 
       version ............ show package version
       help ............... show help menu for a command
       deploy ............. deploy a process definition

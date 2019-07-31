@@ -20,17 +20,23 @@ module.exports = (args) => {
     var processDefinitionService  = new camClient.resource('process-definition');
     var processInstanceService    = new camClient.resource('process-instance');
     var filterService             = new camClient.resource('filter');
-
     
+    const testJSON = {x : {'value' : 1},"aVariable" : {"value" : "aStringValue","type": "String"}};
     const all = args.all || args.a
+    const procKey = args.key || args.k
+    const sourceJSON = args.file || args.f
+    const readJSON = fs.readFile(sourceJSON, function(err,buf){ process.stdout.write(buf)});
+    const parsedJSON = JSON.parse(readJSON);
     try {
     if(all){
       startAllProcesses();
     }
+    else if (sourceJSON && procKey){
+      startFromFile();
+    }
     else {
       startProcess();
     }
-    
 
     spinner.stop()
 
@@ -40,6 +46,20 @@ module.exports = (args) => {
 
     console.error(err)
   }
+  console.log(readJSON);
+
+
+    function startFromFile(args){
+      processDefinitionService.start({
+        key : procKey,
+        variables :  parsedJSON
+      }, function (err) {
+        util.thr(err);
+        //console.log(this);
+        //console.log("------------------------------" + + "---------------------------------------------");
+        console.log('Process started');
+      });
+    }
 
 
     function startProcess() {
@@ -72,7 +92,7 @@ module.exports = (args) => {
               id:  answers.processDefinitionId
             }, function (err) {
               util.thr(err);
-      
+
               console.log('Process started');
             });
           });
