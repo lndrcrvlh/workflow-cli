@@ -21,11 +21,12 @@ module.exports = (args) => {
     var processInstanceService    = new camClient.resource('process-instance');
     var filterService             = new camClient.resource('filter');
     
-    const testJSON = {x : {'value' : 1},"aVariable" : {"value" : "aStringValue","type": "String"}};
+    const testJSON = `{"x" : {"value" : 1},"aVariable" : {"value" : "aStringValue","type": "String"}}`;
     const all = args.all || args.a
     const procKey = args.key || args.k
     const sourceJSON = args.file || args.f
-    const readJSON = fs.readFile(sourceJSON, function(err,buf){ process.stdout.write(buf)});
+    // const readJSON = fs.readFile(process.argv[4], function(err,buf){ process.stdout.write(buf)});
+    const readJSON = fs.readFileSync(process.argv[4], 'utf8');
     const parsedJSON = JSON.parse(readJSON);
     try {
     if(all){
@@ -46,17 +47,16 @@ module.exports = (args) => {
 
     console.error(err)
   }
-  console.log(readJSON);
-
+  console.log('----' + readJSON + '----');
+  //console.log(parsedJSON);
 
     function startFromFile(args){
       processDefinitionService.start({
-        key : procKey,
+        key :        procKey,
         variables :  parsedJSON
       }, function (err) {
         util.thr(err);
-        //console.log(this);
-        //console.log("------------------------------" + + "---------------------------------------------");
+        console.log(readJSON);
         console.log('Process started');
       });
     }
